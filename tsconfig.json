@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES6",                        // Target ES6 instead of ES5
+    "module": "ESNext",                      // Use ES module syntax
+    "moduleResolution": "node",              // Node-style resolution
+    "strict": true,                          // Enable strict mode
+    "jsx": "react",                          // React JSX transformation
+    "declaration": true,                     // Generate .d.ts files for type definitions
+    "declarationDir": "dist/types",          // Output type definitions
+    "esModuleInterop": true,                 // Allow default import of CommonJS modules
+    "skipLibCheck": true,                    // Skip library checking for faster builds
+    "allowSyntheticDefaultImports": true     // Allow default imports for CommonJS
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
