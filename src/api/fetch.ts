@@ -7,6 +7,7 @@ export async function fetchData(
   url: string,
   authToken?: string,
   config: Partial<typeof defaultConfig> = {},
+  headers: Record<string, string> = {},  // Accept custom headers here
   timeout: number = 5000 // Default timeout: 5 seconds
 ): Promise<any> {
   const finalConfig = { ...defaultConfig, ...config };
@@ -23,7 +24,10 @@ export async function fetchData(
     const responseOrError = await Promise.race([
       fetch(url, {
         method: 'GET',
-        headers: buildHeaders('application/json', authToken),
+        headers: {
+          ...buildHeaders('application/json', authToken), // Default headers
+          ...headers, // Merge custom headers
+        },
       }),
       new Promise<Error>((_, reject) =>
         setTimeout(() => reject(new Error('Request timed out')), timeout)

@@ -92,13 +92,15 @@ function withRetry(operation_1, retries_1, delay_1) {
 }
 
 function deleteData(url_1, authToken_1) {
-  return __awaiter(this, arguments, void 0, function* (url, authToken, config = {}, timeout = 5000 // Default timeout: 5 seconds
+  return __awaiter(this, arguments, void 0, function* (url, authToken, config = {}, headers = {},
+  // Add custom headers here
+  timeout = 5000 // Default timeout: 5 seconds
   ) {
     const finalConfig = Object.assign(Object.assign({}, defaultConfig), config);
     const operation = () => __awaiter(this, void 0, void 0, function* () {
       const responseOrError = yield Promise.race([fetch(url, {
         method: 'DELETE',
-        headers: buildHeaders('application/json', authToken)
+        headers: Object.assign(Object.assign({}, buildHeaders('application/json', authToken)), headers)
       }), new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), timeout))]);
       if (responseOrError instanceof Error) {
         throw responseOrError; // Timeout or other error
@@ -112,7 +114,9 @@ function deleteData(url_1, authToken_1) {
 }
 
 function fetchData(url_1, authToken_1) {
-  return __awaiter(this, arguments, void 0, function* (url, authToken, config = {}, timeout = 5000 // Default timeout: 5 seconds
+  return __awaiter(this, arguments, void 0, function* (url, authToken, config = {}, headers = {},
+  // Accept custom headers here
+  timeout = 5000 // Default timeout: 5 seconds
   ) {
     const finalConfig = Object.assign(Object.assign({}, defaultConfig), config);
     const operation = () => __awaiter(this, void 0, void 0, function* () {
@@ -125,7 +129,7 @@ function fetchData(url_1, authToken_1) {
       }
       const responseOrError = yield Promise.race([fetch(url, {
         method: 'GET',
-        headers: buildHeaders('application/json', authToken)
+        headers: Object.assign(Object.assign({}, buildHeaders('application/json', authToken)), headers)
       }), new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), timeout))]);
       if (responseOrError instanceof Error) {
         throw responseOrError; // Timeout or other error
@@ -146,13 +150,15 @@ function fetchData(url_1, authToken_1) {
 }
 
 function postData(url_1, body_1, authToken_1) {
-  return __awaiter(this, arguments, void 0, function* (url, body, authToken, contentType = 'application/json', config = {}, timeout = 5000 // Default timeout: 5 seconds
+  return __awaiter(this, arguments, void 0, function* (url, body, authToken, contentType = 'application/json', config = {}, headers = {},
+  // Accept custom headers here
+  timeout = 5000 // Default timeout: 5 seconds
   ) {
     const finalConfig = Object.assign(Object.assign({}, defaultConfig), config);
     const operation = () => __awaiter(this, void 0, void 0, function* () {
       const responseOrError = yield Promise.race([fetch(url, {
         method: 'POST',
-        headers: buildHeaders(contentType, authToken),
+        headers: Object.assign(Object.assign({}, buildHeaders(contentType, authToken)), headers),
         body: JSON.stringify(body)
       }), new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), timeout))]);
       if (responseOrError instanceof Error) {
@@ -167,13 +173,15 @@ function postData(url_1, body_1, authToken_1) {
 }
 
 function putOrPatchData(method_1, url_1, body_1, authToken_1) {
-  return __awaiter(this, arguments, void 0, function* (method, url, body, authToken, contentType = 'application/json', config = {}, timeout = 5000 // Default timeout: 5 seconds
+  return __awaiter(this, arguments, void 0, function* (method, url, body, authToken, contentType = 'application/json', config = {}, headers = {},
+  // Add custom headers
+  timeout = 5000 // Default timeout: 5 seconds
   ) {
     const finalConfig = Object.assign(Object.assign({}, defaultConfig), config);
     const operation = () => __awaiter(this, void 0, void 0, function* () {
       const responseOrError = yield Promise.race([fetch(url, {
         method,
-        headers: buildHeaders(contentType, authToken),
+        headers: Object.assign(Object.assign({}, buildHeaders(contentType, authToken)), headers),
         body: JSON.stringify(body)
       }), new Promise((_, reject) => setTimeout(() => reject(new Error('Request timed out')), timeout))]);
       if (responseOrError instanceof Error) {
@@ -190,36 +198,41 @@ function putOrPatchData(method_1, url_1, body_1, authToken_1) {
 // apic.ts
 class Apic {
   constructor(config = {}) {
+    this.headers = {}; // New property for headers
     this.config = Object.assign(Object.assign({}, defaultConfig), config);
+  }
+  // Method to set custom headers
+  setHeaders(headers) {
+    this.headers = Object.assign(Object.assign({}, this.headers), headers); // Merge existing and new headers
   }
   // GET request
   get(url, authToken) {
     return __awaiter(this, void 0, void 0, function* () {
-      return fetchData(url, authToken, this.config);
+      return fetchData(url, authToken, this.config, this.headers); // Pass headers along with config
     });
   }
   // POST request
   post(url_1, body_1, authToken_1) {
     return __awaiter(this, arguments, void 0, function* (url, body, authToken, contentType = 'application/json') {
-      return postData(url, body, authToken, contentType, this.config);
+      return postData(url, body, authToken, contentType, this.config, this.headers); // Pass headers along with config
     });
   }
   // PUT request
   put(url_1, body_1, authToken_1) {
     return __awaiter(this, arguments, void 0, function* (url, body, authToken, contentType = 'application/json') {
-      return putOrPatchData('PUT', url, body, authToken, contentType, this.config);
+      return putOrPatchData('PUT', url, body, authToken, contentType, this.config, this.headers); // Pass headers along with config
     });
   }
   // PATCH request
   patch(url_1, body_1, authToken_1) {
     return __awaiter(this, arguments, void 0, function* (url, body, authToken, contentType = 'application/json') {
-      return putOrPatchData('PATCH', url, body, authToken, contentType, this.config);
+      return putOrPatchData('PATCH', url, body, authToken, contentType, this.config, this.headers); // Pass headers along with config
     });
   }
   // DELETE request
   delete(url, authToken) {
     return __awaiter(this, void 0, void 0, function* () {
-      return deleteData(url, authToken, this.config);
+      return deleteData(url, authToken, this.config, this.headers); // Pass headers along with config
     });
   }
   // Set or update configuration
@@ -233,6 +246,16 @@ class Apic {
   // Access cache directly
   getCache() {
     return cache;
+  }
+  // Clear cache for a specific URL or all cached data
+  clearCache(url) {
+    if (url) {
+      // Clear cache for a specific URL
+      cache.delete(url);
+    } else {
+      // Clear all cached data
+      cache.clear();
+    }
   }
 }
 

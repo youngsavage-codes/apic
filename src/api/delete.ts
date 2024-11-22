@@ -6,6 +6,7 @@ export async function deleteData(
   url: string,
   authToken?: string,
   config: Partial<typeof defaultConfig> = {},
+  headers: Record<string, string> = {},  // Add custom headers here
   timeout: number = 5000 // Default timeout: 5 seconds
 ): Promise<any> {
   const finalConfig = { ...defaultConfig, ...config };
@@ -14,7 +15,10 @@ export async function deleteData(
     const responseOrError = await Promise.race([
       fetch(url, {
         method: 'DELETE',
-        headers: buildHeaders('application/json', authToken),
+        headers: {
+          ...buildHeaders('application/json', authToken),
+          ...headers,  // Merge with custom headers
+        },
       }),
       new Promise<Error>((_, reject) =>
         setTimeout(() => reject(new Error('Request timed out')), timeout)

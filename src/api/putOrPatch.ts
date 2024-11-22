@@ -9,6 +9,7 @@ export async function putOrPatchData(
   authToken?: string,
   contentType: string = 'application/json',
   config: Partial<typeof defaultConfig> = {},
+  headers: Record<string, string> = {},  // Add custom headers
   timeout: number = 5000 // Default timeout: 5 seconds
 ): Promise<any> {
   const finalConfig = { ...defaultConfig, ...config };
@@ -17,7 +18,10 @@ export async function putOrPatchData(
     const responseOrError = await Promise.race([
       fetch(url, {
         method,
-        headers: buildHeaders(contentType, authToken),
+        headers: {
+          ...buildHeaders(contentType, authToken),  // Default headers
+          ...headers,  // Merge with custom headers
+        },
         body: JSON.stringify(body),
       }),
       new Promise<Error>((_, reject) =>

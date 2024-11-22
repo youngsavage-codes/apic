@@ -1,6 +1,6 @@
 {
   "name": "endpointx",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A lightweight and efficient JavaScript library for seamless API management. endpointx simplifies API calls by providing automatic retries, intelligent caching, and robust error handling, so you can focus on building your application without worrying about the complexities of API interactions.",
   "main": "/dist/index.js",
   "types": "dist/index.d.ts",

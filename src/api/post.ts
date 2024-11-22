@@ -8,6 +8,7 @@ export async function postData(
   authToken?: string,
   contentType: string = 'application/json',
   config: Partial<typeof defaultConfig> = {},
+  headers: Record<string, string> = {}, // Accept custom headers here
   timeout: number = 5000 // Default timeout: 5 seconds
 ): Promise<any> {
   const finalConfig = { ...defaultConfig, ...config };
@@ -16,7 +17,10 @@ export async function postData(
     const responseOrError = await Promise.race([
       fetch(url, {
         method: 'POST',
-        headers: buildHeaders(contentType, authToken),
+        headers: {
+          ...buildHeaders(contentType, authToken), // Default headers
+          ...headers, // Merge custom headers
+        },
         body: JSON.stringify(body),
       }),
       new Promise<Error>((_, reject) =>
