@@ -72,19 +72,15 @@ function withRetry(operation_1, retries_1, delay_1) {
     while (attempt <= retries) {
       try {
         // Attempt the operation
-        console.log(`Attempt ${attempt + 1} of ${retries + 1}`);
         return yield operation();
       } catch (error) {
         attempt++;
-        console.warn(`Attempt ${attempt} failed. ${retries - attempt} retries left.`);
         if (attempt <= retries) {
           // Retry with delay
-          console.log('Retrying operation...');
           yield new Promise(resolve => setTimeout(resolve, delay));
         }
         // If retry count exceeded and refresh limit is available, refresh request
         if (attempt > retries && refreshAttempts < refreshLimit) {
-          console.log("Maximum retry limit reached. Refreshing...");
           refreshAttempts++;
           yield refreshData(); // Use the local refreshData function
         }

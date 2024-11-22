@@ -12,21 +12,17 @@ export async function withRetry(
   while (attempt <= retries) {
     try {
       // Attempt the operation
-      console.log(`Attempt ${attempt + 1} of ${retries + 1}`);
       return await operation();
     } catch (error) {
       attempt++;
-      console.warn(`Attempt ${attempt} failed. ${retries - attempt} retries left.`);
 
       if (attempt <= retries) {
         // Retry with delay
-        console.log('Retrying operation...');
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
 
       // If retry count exceeded and refresh limit is available, refresh request
       if (attempt > retries && refreshAttempts < refreshLimit) {
-        console.log("Maximum retry limit reached. Refreshing...");
         refreshAttempts++;
         await refreshData(); // Use the local refreshData function
       }
